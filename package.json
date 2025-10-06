@@ -1,7 +1,7 @@
 {
-  "name": "image-uploader",
+  "name": "fxpro-imagify",
   "version": "1.0.0",
-  "description": "Simple image uploader app with login functionality",
+  "description": "FXPRO IMAGIFY - Professional image sharing platform with login functionality",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
