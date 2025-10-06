@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Uploader - Dashboard</title>
+    <title>Imagify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -12,86 +13,178 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0d1421 0%, #1a237e 50%, #0d47a1 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #fafafa;
             min-height: 100vh;
         }
         
         .header {
-            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
-            color: white;
-            padding: 1rem 2rem;
+            background: white;
+            border-bottom: 1px solid #dbdbdb;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 975px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            height: 54px;
         }
         
-        .header h1 {
-            margin: 0;
+        .logo {
+            font-family: 'Grand Hotel', cursive;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .nav-icon {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            stroke: #262626;
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        .nav-icon:hover {
+            stroke: #8e8e8e;
         }
         
         .user-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 15px;
+            font-size: 14px;
+            color: #262626;
         }
         
         .logout-btn {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            background: none;
+            border: none;
+            color: #0095f6;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
         }
         
         .logout-btn:hover {
-            background: rgba(255,255,255,0.25);
-            transform: translateY(-1px);
+            text-decoration: underline;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+        .main-content {
+            max-width: 935px;
+            margin: 84px auto 0;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 1fr 293px;
+            gap: 35px;
+        }
+        
+        .feed {
+            width: 100%;
+        }
+        
+        .sidebar {
+            width: 293px;
         }
         
         .upload-section {
-            background: #263238;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            margin-bottom: 2rem;
-            border: 1px solid #37474f;
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            margin-bottom: 24px;
         }
         
-        .upload-section h2 {
-            color: #e3f2fd;
-            margin-bottom: 1rem;
+        .upload-header {
+            padding: 16px;
+            border-bottom: 1px solid #efefef;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .upload-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .upload-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #262626;
+        }
+        
+        .upload-content {
+            padding: 16px;
         }
         
         .upload-area {
-            border: 2px dashed #455a64;
-            border-radius: 12px;
-            padding: 2rem;
+            border: 2px dashed #dbdbdb;
+            border-radius: 8px;
+            padding: 40px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            background: #37474f;
-            color: #b0bec5;
+            background: #fafafa;
+            color: #8e8e8e;
         }
         
         .upload-area:hover {
-            border-color: #2196f3;
-            background: #3e5b65;
+            border-color: #0095f6;
+            background: #f8f9fa;
         }
         
         .upload-area.drag-over {
-            border-color: #2196f3;
-            background: rgba(33, 150, 243, 0.1);
-            color: #e3f2fd;
+            border-color: #0095f6;
+            background: rgba(0, 149, 246, 0.05);
+            color: #0095f6;
+        }
+        
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            stroke: #8e8e8e;
+            stroke-width: 1;
+        }
+        
+        .upload-text {
+            font-size: 22px;
+            font-weight: 300;
+            margin-bottom: 8px;
+            color: #262626;
+        }
+        
+        .upload-subtext {
+            font-size: 14px;
+            color: #8e8e8e;
+            margin-bottom: 16px;
         }
         
         #imageInput {
@@ -99,21 +192,19 @@
         }
         
         .upload-btn {
-            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            background: #0095f6;
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 4px;
             cursor: pointer;
-            margin-top: 1rem;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.2s;
         }
         
         .upload-btn:hover {
-            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
+            background: #1877f2;
         }
         
         .preview {
@@ -127,60 +218,112 @@
             border-radius: 5px;
         }
         
-        .images-section {
-            background: #263238;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            border: 1px solid #37474f;
-        }
-        
-        .images-section h2 {
-            color: #e3f2fd;
-            margin-bottom: 1rem;
-        }
-        
         .images-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            margin-top: 24px;
         }
         
-        .image-card {
-            border: 1px solid #455a64;
-            border-radius: 12px;
+        .post-card {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            margin-bottom: 24px;
             overflow: hidden;
-            background: #37474f;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: transform 0.3s, box-shadow 0.3s;
         }
         
-        .image-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        .post-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         
-        .image-card img {
+        .post-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .post-username {
+            font-size: 14px;
+            font-weight: 600;
+            color: #262626;
+        }
+        
+        .post-image {
             width: 100%;
-            height: 200px;
+            aspect-ratio: 1;
             object-fit: cover;
+            cursor: pointer;
         }
         
-        .image-info {
-            padding: 1rem;
+        .grid-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            cursor: pointer;
+            transition: filter 0.2s;
         }
         
-        .image-info h4 {
-            margin-bottom: 0.5rem;
-            color: #e3f2fd;
-            font-size: 0.9rem;
-            word-break: break-all;
+        .grid-image:hover {
+            filter: brightness(0.9);
         }
         
-        .image-info p {
-            color: #90a4ae;
-            font-size: 0.8rem;
+        .post-actions {
+            padding: 8px 16px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .action-icon {
+            width: 24px;
+            height: 24px;
+            stroke: #262626;
+            stroke-width: 2;
+            fill: none;
+            cursor: pointer;
+        }
+        
+        .post-info {
+            padding: 0 16px 16px;
+        }
+        
+        .post-filename {
+            font-size: 14px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 4px;
+        }
+        
+        .post-date {
+            font-size: 12px;
+            color: #8e8e8e;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+        }
+        
+        .sidebar-section {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #8e8e8e;
+            margin-bottom: 12px;
         }
         
         .message {
@@ -210,33 +353,54 @@
 </head>
 <body>
     <div class="header">
-        <h1>Image Uploader Dashboard</h1>
-        <div class="user-info">
-            <span>Welcome, <span id="username"></span></span>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+        <div class="header-content">
+            <div class="logo">Imagify</div>
+            <div class="nav-icons">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                <div class="user-info">
+                    <span id="username"></span>
+                    <button class="logout-btn" onclick="logout()">Log Out</button>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="container">
-        <div class="upload-section">
-            <h2>Upload New Image</h2>
-            <div id="message"></div>
-            
-            <div class="upload-area" onclick="document.getElementById('imageInput').click()">
-                <p>Click here or drag and drop an image to upload</p>
-                <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
-                    Supported formats: JPEG, PNG, GIF, WebP (Max 5MB)
-                </p>
-                <input type="file" id="imageInput" accept="image/*">
-                <button type="button" class="upload-btn">Choose File</button>
+    <div class="main-content">
+        <div class="feed">
+            <div class="upload-section">
+                <div class="upload-header">
+                    <div class="upload-avatar" id="userAvatar"></div>
+                    <div class="upload-title">Share a new photo</div>
+                </div>
+                <div class="upload-content">
+                    <div id="message"></div>
+                    <div class="upload-area" onclick="document.getElementById('imageInput').click()">
+                        <svg class="upload-icon" viewBox="0 0 24 24">
+                            <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <div class="upload-text">Share photos</div>
+                        <div class="upload-subtext">Drag photos here or</div>
+                        <input type="file" id="imageInput" accept="image/*">
+                        <button type="button" class="upload-btn">Select from computer</button>
+                    </div>
+                    <div id="preview" class="preview"></div>
+                </div>
             </div>
             
-            <div id="preview" class="preview"></div>
+            <div id="postsContainer">
+                <!-- Posts will be generated here -->
+            </div>
         </div>
         
-        <div class="images-section">
-            <h2>Your Images</h2>
-            <div id="imagesContainer" class="loading">Loading images...</div>
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Your Gallery</div>
+                <div id="imagesContainer" class="images-grid">
+                    <div class="loading">Loading images...</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -254,6 +418,7 @@
                 }
                 
                 document.getElementById('username').textContent = data.username;
+                updateUserAvatar();
                 loadImages();
             } catch (error) {
                 window.location.href = '/login.html';
@@ -363,26 +528,58 @@
                 const response = await fetch('/api/images');
                 const data = await response.json();
 
-                const container = document.getElementById('imagesContainer');
+                const gridContainer = document.getElementById('imagesContainer');
+                const postsContainer = document.getElementById('postsContainer');
 
                 if (data.images && data.images.length > 0) {
-                    container.innerHTML = '<div class="images-grid">' + 
-                        data.images.map(image => `
-                            <div class="image-card">
-                                <img src="${image.url}" alt="${image.original_name}" loading="lazy">
-                                <div class="image-info">
-                                    <h4>${image.original_name}</h4>
-                                    <p>Uploaded: ${new Date(image.uploaded_at).toLocaleDateString()}</p>
-                                </div>
+                    // Generate grid view for sidebar
+                    gridContainer.innerHTML = data.images.map(image => `
+                        <img src="${image.url}" alt="${image.original_name}" 
+                             class="grid-image" loading="lazy">
+                    `).join('');
+
+                    // Generate Instagram-style posts for main feed
+                    postsContainer.innerHTML = data.images.map(image => `
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="post-avatar">${document.getElementById('username').textContent.charAt(0).toUpperCase()}</div>
+                                <div class="post-username">${document.getElementById('username').textContent}</div>
                             </div>
-                        `).join('') + 
-                    '</div>';
+                            <img src="${image.url}" alt="${image.original_name}" class="post-image">
+                            <div class="post-actions">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                                    <polyline points="16,6 12,2 8,6"/>
+                                    <line x1="12" y1="2" x2="12" y2="15"/>
+                                </svg>
+                            </div>
+                            <div class="post-info">
+                                <div class="post-filename">${image.original_name}</div>
+                                <div class="post-date">${new Date(image.uploaded_at).toLocaleDateString().toUpperCase()}</div>
+                            </div>
+                        </div>
+                    `).join('');
                 } else {
-                    container.innerHTML = '<p style="text-align: center; color: #666;">No images uploaded yet.</p>';
+                    gridContainer.innerHTML = '<p style="text-align: center; color: #8e8e8e; font-size: 14px;">No photos yet</p>';
+                    postsContainer.innerHTML = '';
                 }
             } catch (error) {
                 document.getElementById('imagesContainer').innerHTML = 
-                    '<p style="text-align: center; color: #e74c3c;">Failed to load images.</p>';
+                    '<p style="text-align: center; color: #ed4956; font-size: 14px;">Failed to load images</p>';
+            }
+        }
+
+        function updateUserAvatar() {
+            const username = document.getElementById('username').textContent;
+            const avatar = document.getElementById('userAvatar');
+            if (username && avatar) {
+                avatar.textContent = username.charAt(0).toUpperCase();
             }
         }
 
