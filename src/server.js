@@ -133,6 +133,32 @@ app.get('/api/user', (req, res) => {
     }
 });
 
+// Database viewer endpoint (for development/debugging)
+app.get('/api/database/users', auth.requireAuth, (req, res) => {
+    const db = require('./database');
+    db.all('SELECT id, username, created_at FROM users', (err, users) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json({ users });
+        }
+    });
+});
+
+app.get('/api/database/images', auth.requireAuth, (req, res) => {
+    const db = require('./database');
+    db.all(`SELECT images.*, users.username 
+            FROM images 
+            JOIN users ON images.user_id = users.id 
+            ORDER BY images.uploaded_at DESC`, (err, images) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json({ images });
+        }
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
