@@ -4,7 +4,8 @@
       "Bash(mkdir:*)",
       "Bash(npm install)",
       "Bash(npm run dev:*)",
-      "Bash(code .)"
+      "Bash(code .)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

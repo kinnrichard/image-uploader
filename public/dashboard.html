@@ -13,17 +13,18 @@
         
         body {
             font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #0d1421 0%, #1a237e 50%, #0d47a1 100%);
             min-height: 100vh;
         }
         
         .header {
-            background: #667eea;
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
             color: white;
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
         .header h1 {
@@ -37,16 +38,18 @@
         }
         
         .logout-btn {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
             color: white;
-            border: none;
+            border: 1px solid rgba(255,255,255,0.3);
             padding: 0.5rem 1rem;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
+            transition: all 0.3s;
         }
         
         .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-1px);
         }
         
         .container {
@@ -56,29 +59,39 @@
         }
         
         .upload-section {
-            background: white;
+            background: #263238;
             padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
             margin-bottom: 2rem;
+            border: 1px solid #37474f;
+        }
+        
+        .upload-section h2 {
+            color: #e3f2fd;
+            margin-bottom: 1rem;
         }
         
         .upload-area {
-            border: 2px dashed #ccc;
-            border-radius: 10px;
+            border: 2px dashed #455a64;
+            border-radius: 12px;
             padding: 2rem;
             text-align: center;
             cursor: pointer;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            background: #37474f;
+            color: #b0bec5;
         }
         
         .upload-area:hover {
-            border-color: #667eea;
+            border-color: #2196f3;
+            background: #3e5b65;
         }
         
         .upload-area.drag-over {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
+            border-color: #2196f3;
+            background: rgba(33, 150, 243, 0.1);
+            color: #e3f2fd;
         }
         
         #imageInput {
@@ -86,17 +99,21 @@
         }
         
         .upload-btn {
-            background: #667eea;
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
             color: white;
             border: none;
             padding: 0.75rem 1.5rem;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             margin-top: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
         }
         
         .upload-btn:hover {
-            background: #5a6fd8;
+            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
         }
         
         .preview {
@@ -111,10 +128,16 @@
         }
         
         .images-section {
-            background: white;
+            background: #263238;
             padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border: 1px solid #37474f;
+        }
+        
+        .images-section h2 {
+            color: #e3f2fd;
+            margin-bottom: 1rem;
         }
         
         .images-grid {
@@ -125,11 +148,17 @@
         }
         
         .image-card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            border: 1px solid #455a64;
+            border-radius: 12px;
             overflow: hidden;
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: #37474f;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .image-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
         
         .image-card img {
@@ -144,37 +173,37 @@
         
         .image-info h4 {
             margin-bottom: 0.5rem;
-            color: #333;
+            color: #e3f2fd;
             font-size: 0.9rem;
             word-break: break-all;
         }
         
         .image-info p {
-            color: #666;
+            color: #90a4ae;
             font-size: 0.8rem;
         }
         
         .message {
             padding: 1rem;
-            border-radius: 5px;
+            border-radius: 8px;
             margin-bottom: 1rem;
         }
         
         .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: rgba(102, 187, 106, 0.15);
+            color: #66bb6a;
+            border: 1px solid rgba(102, 187, 106, 0.3);
         }
         
         .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: rgba(239, 83, 80, 0.15);
+            color: #ef5350;
+            border: 1px solid rgba(239, 83, 80, 0.3);
         }
         
         .loading {
             text-align: center;
-            color: #666;
+            color: #90a4ae;
             padding: 2rem;
         }
     </style>
