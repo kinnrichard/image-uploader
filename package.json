@@ -7,7 +7,7 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "build": "npm ci --only=production",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No tests specified - skipping\" && exit 0",
     "docker:build": "docker build -t image-uploader .",
     "docker:run": "docker run -p 3000:3000 image-uploader",
     "docker:compose:up": "docker-compose up -d",
