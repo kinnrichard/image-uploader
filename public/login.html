@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Uploader - Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        
+        button:hover {
+            background: #5a6fd8;
+        }
+        
+        .toggle-form {
+            text-align: center;
+            color: #666;
+        }
+        
+        .toggle-form a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+        
+        .error {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .success {
+            color: #27ae60;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Uploader</h1>
+        
+        <div id="message"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit">Login</button>
+        </form>
+        
+        <div class="toggle-form">
+            Don't have an account? <a href="#" onclick="toggleForm()">Register here</a>
+        </div>
+        
+        <form id="registerForm" style="display: none;">
+            <div class="form-group">
+                <label for="regUsername">Username:</label>
+                <input type="text" id="regUsername" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="regPassword">Password:</label>
+                <input type="password" id="regPassword" name="password" required>
+            </div>
+            
+            <button type="submit">Register</button>
+        </form>
+        
+        <div id="registerToggle" class="toggle-form" style="display: none;">
+            Already have an account? <a href="#" onclick="toggleForm()">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        let isLoginForm = true;
+
+        function toggleForm() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const toggleForm = document.querySelector('.toggle-form');
+            const registerToggle = document.getElementById('registerToggle');
+            const message = document.getElementById('message');
+
+            if (isLoginForm) {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                toggleForm.style.display = 'none';
+                registerToggle.style.display = 'block';
+                document.querySelector('h1').textContent = 'Register';
+            } else {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                toggleForm.style.display = 'block';
+                registerToggle.style.display = 'none';
+                document.querySelector('h1').textContent = 'Image Uploader';
+            }
+            
+            isLoginForm = !isLoginForm;
+            message.innerHTML = '';
+        }
+
+        function showMessage(text, isError = false) {
+            const message = document.getElementById('message');
+            message.innerHTML = `<div class="${isError ? 'error' : 'success'}">${text}</div>`;
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/';
+                } else {
+                    showMessage(data.error, true);
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', true);
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/';
+                } else {
+                    showMessage(data.error, true);
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', true);
+            }
+        });
+    </script>
+</body>
+</html>

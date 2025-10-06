@@ -1,0 +1,32 @@
+name: image-uploader-docker
+services:
+- name: web
+  image:
+    registry_type: DOCR
+    repository: image-uploader
+    tag: latest
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  http_port: 3000
+  routes:
+  - path: /
+  health_check:
+    http_path: /api/user
+    initial_delay_seconds: 30
+    period_seconds: 10
+    timeout_seconds: 5
+    failure_threshold: 3
+    success_threshold: 2
+  env:
+  - key: NODE_ENV
+    value: "production"
+  - key: PORT
+    value: "3000"
+  - key: SESSION_SECRET
+    value: "${SESSION_SECRET}"
+    type: SECRET
+
+static_sites: []
+jobs: []
+workers: []
+databases: []

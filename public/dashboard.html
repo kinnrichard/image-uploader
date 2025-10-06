@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Uploader - Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .upload-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+        }
+        
+        .upload-area.drag-over {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        #imageInput {
+            display: none;
+        }
+        
+        .upload-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        .upload-btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .preview {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 5px;
+        }
+        
+        .images-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .image-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .image-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .image-info {
+            padding: 1rem;
+        }
+        
+        .image-info h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+        
+        .image-info p {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Image Uploader Dashboard</h1>
+        <div class="user-info">
+            <span>Welcome, <span id="username"></span></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="upload-section">
+            <h2>Upload New Image</h2>
+            <div id="message"></div>
+            
+            <div class="upload-area" onclick="document.getElementById('imageInput').click()">
+                <p>Click here or drag and drop an image to upload</p>
+                <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
+                    Supported formats: JPEG, PNG, GIF, WebP (Max 5MB)
+                </p>
+                <input type="file" id="imageInput" accept="image/*">
+                <button type="button" class="upload-btn">Choose File</button>
+            </div>
+            
+            <div id="preview" class="preview"></div>
+        </div>
+        
+        <div class="images-section">
+            <h2>Your Images</h2>
+            <div id="imagesContainer" class="loading">Loading images...</div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/user');
+                const data = await response.json();
+                
+                if (!data.loggedIn) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                
+                document.getElementById('username').textContent = data.username;
+                loadImages();
+            } catch (error) {
+                window.location.href = '/login.html';
+            }
+        }
+
+        function showMessage(text, isError = false) {
+            const message = document.getElementById('message');
+            message.innerHTML = `<div class="message ${isError ? 'error' : 'success'}">${text}</div>`;
+            
+            setTimeout(() => {
+                message.innerHTML = '';
+            }, 5000);
+        }
+
+        const uploadArea = document.querySelector('.upload-area');
+        const imageInput = document.getElementById('imageInput');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (!file.type.startsWith('image/')) {
+                showMessage('Please select an image file.', true);
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('File size must be less than 5MB.', true);
+                return;
+            }
+            
+            selectedFile = file;
+            showPreview(file);
+        }
+
+        function showPreview(file) {
+            const preview = document.getElementById('preview');
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                preview.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview">
+                    <br>
+                    <button class="upload-btn" onclick="uploadImage()">Upload Image</button>
+                `;
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        async function uploadImage() {
+            if (!selectedFile) {
+                showMessage('Please select an image first.', true);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('Image uploaded successfully!');
+                    document.getElementById('preview').innerHTML = '';
+                    imageInput.value = '';
+                    selectedFile = null;
+                    loadImages();
+                } else {
+                    showMessage(data.error, true);
+                }
+            } catch (error) {
+                showMessage('Upload failed. Please try again.', true);
+            }
+        }
+
+        async function loadImages() {
+            try {
+                const response = await fetch('/api/images');
+                const data = await response.json();
+
+                const container = document.getElementById('imagesContainer');
+
+                if (data.images && data.images.length > 0) {
+                    container.innerHTML = '<div class="images-grid">' + 
+                        data.images.map(image => `
+                            <div class="image-card">
+                                <img src="${image.url}" alt="${image.original_name}" loading="lazy">
+                                <div class="image-info">
+                                    <h4>${image.original_name}</h4>
+                                    <p>Uploaded: ${new Date(image.uploaded_at).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                        `).join('') + 
+                    '</div>';
+                } else {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">No images uploaded yet.</p>';
+                }
+            } catch (error) {
+                document.getElementById('imagesContainer').innerHTML = 
+                    '<p style="text-align: center; color: #e74c3c;">Failed to load images.</p>';
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>
