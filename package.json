@@ -1,7 +1,7 @@
 {
-  "name": "fxpro-imagify",
+  "name": "imagify",
   "version": "1.0.0",
-  "description": "FXPRO IMAGIFY - Professional image sharing platform with login functionality",
+  "description": "Imagify - Professional image sharing platform with login functionality",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
